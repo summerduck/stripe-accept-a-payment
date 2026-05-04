@@ -1,151 +1,110 @@
-# Accept a payment
+# stripe-accept-a-payment — Custom Payment Flow
 
-_Learn how to securely accept payments online._
+> **Application Under Test** for the [fintech-playwright-quality](https://github.com/summerduck/fintech-playwright-quality) showcase — an AI-augmented fintech testing platform.
 
-This repository includes examples of 4 types of integration.
-
-|[Prebuilt Checkout page](./prebuilt-checkout-page) ([docs](https://stripe.com/docs/payments/accept-a-payment?ui=checkout))| [Payment Element](./payment-element) ([docs](https://stripe.com/docs/payments/accept-a-payment?platform=web&ui=elements)) | [Custom payment flow](./custom-payment-flow) ([docs](https://stripe.com/docs/payments/accept-card-payments?platform=web&ui=elements)) | [Elements with Checkout Sessions](./elements-with-checkout-sessions) ([docs](https://docs.stripe.com/payments/quickstart-checkout-sessions)) |
-|---|---|---|---|
-| Lower complexity. | Moderate complexity. | Higher complexity. | Moderate complexity. |
-| Customize logo, images, and colors. | Customize components with [Appearance API](https://stripe.com/docs/stripe-js/appearance-api). | Customize all components with CSS. | Customize components with [Appearance API](https://stripe.com/docs/stripe-js/appearance-api). |
-| Add payment method types with a single line change. | Add payment methods with a single line change. | Implement each payment method type as a custom integration. | Add payment methods with a single line change. |
-| Built-in support for Apple Pay, and Google Pay. | Built-in support for Apple Pay and Google Pay. | Integrate Apple Pay and Google Pay with extra code.| Built-in support for Apple Pay and Google Pay. |
-| Redirect to Stripe hosted page. | Customers stay on your site, but payment completion triggers a redirect. |Customers stay on your site. | Customers stay on your site, but payment completion triggers a redirect. |
-| Small refactor to collect recurring payments. | Large refactor to collect recurring payments. | Large refactor to collect recurring payments. | Small refactor to collect recurring payments. |
-| Input validation and error handling built in. | Input validation built-in but you must implement error handling. | Implement your own input validation and error handling. | Input validation built-in but you must implement error handling. |
-| Localized in 25+ languages. | Localized in 25+ languages. |Implement your own localization. | Localized in 25+ languages. |
-| Automate calculation and collection of sales tax, VAT and GST with one line of code. | Calculate tax using the [Tax API](https://stripe.com/docs/tax/custom) | Calculate tax using the [Tax API](https://stripe.com/docs/tax/custom) | Automate calculation and collection of sales tax, VAT and GST with one line of code. |
-
-
-### Payment Method Type Support
-
-|Payment Method Type | [Prebuilt Checkout page](./prebuilt-checkout-page) ([docs](https://stripe.com/docs/payments/accept-a-payment?ui=checkout))| [Payment Element](./payment-element) ([docs](https://stripe.com/docs/payments/accept-a-payment?platform=web&ui=elements)) | [Custom payment flow](./custom-payment-flow) ([docs](https://stripe.com/docs/payments/accept-card-payments?platform=web&ui=elements)) | [Elements with Checkout Sessions](./elements-with-checkout-sessions) ([docs](https://docs.stripe.com/payments/quickstart-checkout-sessions)) |
-|---|---|---|---|---|
-|ACH Credit Transfer|  |  | | |
-|ACH Debit| ✅ | ✅ | ✅ | ✅ |
-|Afterpay/Clearpay| ✅ | ✅ | ✅ | ✅ |
-|Alipay| ✅ | ✅ | ✅ | ✅ |
-|Apple Pay| ✅ | ✅ | ✅ | ✅ |
-|Bacs Direct Debit| ✅ |  |  | ✅ |
-|Bancontact| ✅ | ✅ | ✅ | ✅ |
-|BECS Direct Debit| ✅ | ✅ | ✅ | ✅ |
-|Boleto| ✅ | ✅ | ✅ | ✅ |
-|Cards| ✅ | ✅ | ✅ | ✅ |
-|EPS| ✅ | ✅ | ✅ | ✅ |
-|FPX| ✅ | ✅ | ✅ | ✅ |
-|giropay| ✅ | ✅ | ✅ | ✅ |
-|Google Pay| ✅ | ✅ | ✅ | ✅ |
-|GrabPay| ✅ | ✅ | ✅ | ✅ |
-|iDEAL| ✅ | ✅ | ✅ | ✅ |
-|Klarna| ✅ | ✅ | ✅ | ✅ |
-|Link| ✅ | ✅ |  | ✅ |
-|Multibanco| ✅ | ✅ |  | ✅ |
-|OXXO| ✅ | ✅ | ✅ | ✅ |
-|PayPal| ✅ | ✅ | ✅ | ✅ |
-|Przelewy24 (P24)| ✅ | ✅ | ✅ | ✅ |
-|SEPA Direct Debit| ✅ | ✅ | ✅ | ✅ |
-|Sofort| ✅ | ✅ | ✅ | ✅ |
-|WeChat Pay| ✅ | ✅ | ✅ | ✅ |
-
-
-## Installation
-
-The recommended way to use this Stripe Sample is with the [Stripe CLI](https://stripe.com/docs/stripe-cli#install):
-
-```sh
-stripe samples create accept-a-payment
-```
-
-You can also clone the repository, but there is a bit more manual setup work to
-configure the `.env` environment variable file in the server directory.
-
-You'll find more detailed instructions for each integration type in the
-relevant READMEs:
-
-- [Prebuilt Checkout page](./prebuilt-checkout-page/README.md)
-- [Payment Element](./payment-element/README.md)
-- [Custom payment flow](./custom-payment-flow/README.md)
-- [Elements with Checkout Sessions](./elements-with-checkout-sessions/README.md)
+This repository runs the **custom-payment-flow** integration from [stripe-samples/accept-a-payment](https://github.com/stripe-samples/accept-a-payment). It is a Flask-based server that exposes Stripe's PaymentIntents API alongside a static HTML client, used as a real payment application to test against.
 
 ---
-## FAQ
 
-Q: Why did you pick these frameworks?
+## What this app does
 
-A: We chose the most minimal framework to convey the key Stripe calls and
-concepts you need to understand. These demos are meant as an educational tool
-that helps you roadmap how to integrate Stripe within your own system
-independent of the framework.
+- Accepts payments via Stripe [Elements](https://stripe.com/docs/stripe-js) with a fully custom form (no Stripe-hosted UI)
+- Supports multiple payment method types: Card, ACSS Debit, BECS Direct Debit, SEPA Direct Debit, Bancontact, iDEAL, Afterpay/Clearpay, OXXO, Alipay, Apple Pay, Google Pay, GrabPay, and more
+- Exposes three server endpoints consumed by the tests:
+  - `GET /config` — returns the Stripe publishable key
+  - `POST /create-payment-intent` — creates a PaymentIntent for a given payment method type and currency
+  - `POST /webhook` — handles Stripe webhook events
 
-## Get support
+---
 
-If you found a bug or want to suggest a new [feature/use case/sample], please [file an issue](../../issues).
+## Stack
 
-If you have questions, comments, or need help with code, we're here to help:
-- on [Discord](https://stripe.com/go/developer-chat)
-- on Twitter at [@StripeDev](https://twitter.com/StripeDev)
-- on Stack Overflow at the [stripe-payments](https://stackoverflow.com/tags/stripe-payments/info) tag
+| Layer | Technology |
+|---|---|
+| Server | Python 3.8+ / Flask |
+| Client | Static HTML |
+| Stripe SDK | `stripe` Python library (`2023-10-16` API version) |
 
-Sign up to [stay updated with developer news](https://go.stripe.global/dev-digest).
+---
 
+## Running locally
 
-## Testing
+### 1. Configure environment variables
 
-See [TESTING.md](./TESTING.md).
+```bash
+cp .env.example .env
+```
 
-## Running samples with Dev Containers or Codespaces
+Fill in your [Stripe test API keys](https://dashboard.stripe.com/apikeys):
 
-We provide [Dev Container](https://containers.dev/) configurations for most of the sample apps for web. For the Visual Studio Code example, by hitting `Reopen in Containers` in the Command Pallete and choosing a sample from the options prompted, dedicated Docker containers for the sample will be automatically created.
+```bash
+STRIPE_PUBLISHABLE_KEY=pk_test_...
+STRIPE_SECRET_KEY=sk_test_...
+STRIPE_WEBHOOK_SECRET=whsec_...   # optional, needed for webhook verification
+STATIC_DIR=../../client/html
+DOMAIN=http://localhost:4242
+```
 
-You can also try these samples even without installing Docker on your machine by using [GitHub Codespaces](https://github.com/features/codespaces). A sample app codespace can be created by clicking "New with options..." below and choosing a sample app from the Dev container configuration select box. **Note that in this case, you would be charged for usage of GitHub Codespaces.**
+### 2. Install dependencies
 
-![](https://github.com/stripe-samples/accept-a-payment/assets/43346/9db4688c-a71d-4624-80f1-4b79c5cae44d)
+```bash
+cd custom-payment-flow/server/python
+pip install -r requirements.txt
+```
 
-### Running server app samples
+### 3. Start the server
 
-After launching the environment, a couple of setup steps would be needed to launch the web app. For the NodeJS (`custom-payment-flow-server-node`) example:
+```bash
+python server.py
+# Listening on http://localhost:4242
+```
 
-1. Export the required environment variables
-    1. `export STRIPE_PUBLISHABLE_KEY=XXXX`
-    2. `export STRIPE_SECRET_KEY=XXXX`
-    3. `export PRICE=XXXX`
-2. Install the dependencies and run the web server. For NodeJS example, `npm install && npm run start`
+Verify:
 
-You can also run some tests for the server app by the following steps. This example is a little hacky as we need to use SSH to run a test command in another container (`runner`).
+```bash
+curl http://localhost:4242/config
+# {"publishableKey":"pk_test_..."}
+```
 
-1. Run `ssh-keygen` and `chmod 600 ~/.ssh/*`
-2. Login to the test runner service with `ssh runner`
-3. Move to the working dir with `cd /work`
-4. Export the required environment variables
-    1. `export $(cat .devcontainer/.env | xargs)`
-    2. `export STRIPE_PUBLISHABLE_KEY=XXXX`
-    3. `export STRIPE_SECRET_KEY=XXXX`
-    4. `export PRICE=XXXX`
-5. Run tests like `bundle exec rspec spec/custom_payment_flow_server_spec.rb `
+### 4. (Optional) Forward webhooks locally
 
-### Running client app samples
+```bash
+stripe listen --forward-to localhost:4242/webhook
+```
 
-After launching the environment, a couple of setup steps would be needed to launch the app. For the Create React App (`custom-payment-flow-client-react-cra`) example:
+Copy the printed `whsec_...` value into `.env` as `STRIPE_WEBHOOK_SECRET`.
 
-1. Export the required environment variables
-    1. `export STRIPE_PUBLISHABLE_KEY=XXXX`
-    2. `export STRIPE_SECRET_KEY=XXXX`
-    3. `export PRICE=XXXX`
-2. Install the dependencies and run the node web server by running `cd ../../server/node && npm install && npm run start`
-3. In another terminal, install the dependencies and run the client app by running `npm install && npm start`
-  * :memo: You might want to set `server.hmr.port` to `443` in `vite.config.js` ([related issue](https://github.com/vitejs/vite/issues/4259))
+---
 
-## Authors
+## Supported payment methods
 
-- [@cjav_dev](https://twitter.com/cjav_dev)
-- [@thorwebdev](https://twitter.com/thorwebdev)
-- [@aliriaz](https://github.com/aliriaz-stripe)
-- [@charlesw](https://twitter.com/charlesw_dev)
+| Payment Method | Currency | Notes |
+|---|---|---|
+| Card | Any | Test card: `4242 4242 4242 4242` |
+| ACSS Debit | CAD | Requires mandate options |
+| BECS Direct Debit | AUD | Account must be in AU |
+| SEPA Direct Debit | EUR | |
+| Bancontact | EUR | Redirect flow |
+| iDEAL | EUR | Bank selection required |
+| Afterpay / Clearpay | USD/AUD/GBP/CAD/NZD | Redirect flow |
+| OXXO | MXN | Account must be in MX |
+| Alipay | Multiple | Redirect flow |
+| Apple Pay | Any | Requires HTTPS + domain verification |
+| Google Pay | Any | Requires HTTPS |
+| GrabPay | SGD/MYR | Account must be in SG or MY |
 
-## Contributors
+---
 
-<a href="https://github.com/stripe-samples/accept-a-payment/graphs/contributors">
-  <img src="https://contrib.rocks/image?repo=stripe-samples/accept-a-payment" />
-</a>
+## Testing this app
 
-Made with [contrib.rocks](https://contrib.rocks).
+Tests live in the [fintech-playwright-quality](https://github.com/summerduck/fintech-playwright-quality) repository. That repo contains the full AI-augmented test suite (Playwright + pytest + Claude API agents) that runs against this application.
+
+For the built-in RSpec API and E2E tests that ship with this sample, see [SETUP_AND_TROUBLESHOOTING.md](./SETUP_AND_TROUBLESHOOTING.md).
+
+---
+
+## Related
+
+- [fintech-playwright-quality](https://github.com/summerduck/fintech-playwright-quality) — test framework repo (Playwright, pytest, Claude API)
+- [Stripe custom payment flow docs](https://stripe.com/docs/payments/accept-card-payments?platform=web&ui=elements)
+- [Stripe test cards](https://stripe.com/docs/testing#cards)
