@@ -19,6 +19,7 @@ __pycache__
 venv
 .venv
 env
+.env
 
 # PHP files
 vendor
